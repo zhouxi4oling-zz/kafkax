@@ -1,7 +1,3 @@
-# KafkaX
-
-A customized Kafka implementation
-
 # kafkax-client
 
 ## 1 介绍
