@@ -24,7 +24,7 @@ public class KafkaProducerServiceTest {
     }
 
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("test-lafka-client.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext("test-kafkax-client.xml");
         KafkaProducerServiceTest producerServiceTest = context.getBean("kafkaProducerServiceTest", KafkaProducerServiceTest.class);
         producerServiceTest.test();
     }
