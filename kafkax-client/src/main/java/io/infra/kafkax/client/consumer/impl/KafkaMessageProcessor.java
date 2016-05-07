@@ -64,7 +64,7 @@ public class KafkaMessageProcessor {
             Message message = MessageRecorder.getInstance().unrecord(consumerRecord);
 
             // TODO: 不严谨但错误概率不大
-            map.put(new TopicPartition(message.getTopic(), message.getPartition()), new OffsetAndMetadata(message.getOffset()));
+            map.put(new TopicPartition(message.getTopic(), message.getPartition()), new OffsetAndMetadata(message.getOffset() + 1));
 
             KafkaConsumerConfig kafkaConsumerConfig = configs.getKafkaConsumerConfig(message.getTopic(), message.getSelectKey());
 
