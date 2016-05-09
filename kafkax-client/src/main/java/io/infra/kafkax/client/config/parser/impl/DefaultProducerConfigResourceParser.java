@@ -1,7 +1,7 @@
 package io.infra.kafkax.client.config.parser.impl;
 
-import io.infra.kafkax.client.config.KafkaProducerConfig;
 import io.infra.kafkax.client.config.KafkaConfigs;
+import io.infra.kafkax.client.config.KafkaProducerConfig;
 import io.infra.kafkax.client.config.annotation.KafkaProducer;
 import io.infra.kafkax.client.config.parser.ProducerConfigResourceParser;
 import io.infra.kafkax.client.exception.KafkaRuntimeException;

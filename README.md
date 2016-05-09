@@ -4,6 +4,10 @@
 
 kafkax-client是基于Kafka 0.9.0.1版本进行封装的客户端，目的是为了更加易于使用，同时扩展了原生客户端的功能，并加入一些必要的监控。
 
+** 注意： **
+
+- 由于Kafka 0.9.0.1原生客户端采用的是JDK7版本开发，所以在使用时务必采用JDK7开发系统。
+
 ## 2 使用指南
 
 ### 2.1 依赖说明
@@ -51,6 +55,8 @@ kafka.consumer.concurrency=5
 ```
 
 消费端的设计采用生产者消费者模式。单消费者线程轮询从服务器拉取消息，此处的`pollingInterval`设置的是轮询间隔，而`pollingTimeout`设置的是单次拉取持续时间。`concurrency`设置对拉回的消息处理时的并行度，消息会以TopicPartition发配到指定的处理线程进行处理。
+
+注意，`pollingInterval + pollingTimeout`应小于等于30000，即30秒，这是默认的客户端与服务器之间的心跳超时时间。
 
 #### 2.1.3 Spring配置
 
@@ -197,6 +203,11 @@ topic由消息的生产方申请。由于Kafka的topic从使用形式上推荐�
 那就可以这样来命名Topic和SelectKey：
 
 一个Topic：`group-id.module1.sub-module1`
+
 五个SelectKey：`sub-module1.operation1`、`sub-module1.operation2`、`sub-module2.operation1`、`sub-module2.operation2`、`sub-module3.operation1`。
+
+### 3.3 topic/selectKey等配置数据维护
+
+由于目前相关的Console还没提供（正在计划中），所以大家需要自己先维护一份完整的配置参数文档，后续导入。
 
 ## 4 FAQ

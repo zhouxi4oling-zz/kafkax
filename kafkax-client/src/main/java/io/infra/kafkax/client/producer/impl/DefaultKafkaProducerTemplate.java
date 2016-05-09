@@ -1,16 +1,18 @@
 package io.infra.kafkax.client.producer.impl;
 
-import io.infra.kafkax.client.message.recorder.MessageRecorder;
-import io.infra.kafkax.client.producer.KafkaProducerTemplate;
-import io.infra.kafkax.client.producer.callback.ProducerCallback;
-import io.infra.kafkax.client.template.CloseableKafkaTemplate;
 import io.infra.kafkax.client.config.KafkaConfigs;
 import io.infra.kafkax.client.exception.KafkaRuntimeException;
 import io.infra.kafkax.client.message.Message;
+import io.infra.kafkax.client.message.recorder.MessageRecorder;
 import io.infra.kafkax.client.producer.KafkaProducerFactory;
+import io.infra.kafkax.client.producer.KafkaProducerTemplate;
+import io.infra.kafkax.client.producer.callback.ProducerCallback;
+import io.infra.kafkax.client.template.CloseableKafkaTemplate;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.util.concurrent.Future;
@@ -19,6 +21,8 @@ import java.util.concurrent.Future;
  * Created by zhouxiaoling on 16/3/21.
  */
 public class DefaultKafkaProducerTemplate implements KafkaProducerTemplate, CloseableKafkaTemplate {
+
+    private final Logger logger = LoggerFactory.getLogger(DefaultKafkaProducerTemplate.class);
 
     private KafkaProducer<String, byte[]> producer;
     private boolean closed = false;
@@ -30,6 +34,7 @@ public class DefaultKafkaProducerTemplate implements KafkaProducerTemplate, Clos
     @Override
     public synchronized void close() {
         if (!closed) {
+            logger.info("Producer is going to be closed.");
             producer.close();
             closed = true;
         }

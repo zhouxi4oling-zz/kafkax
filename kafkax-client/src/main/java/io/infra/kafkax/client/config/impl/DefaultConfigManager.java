@@ -66,7 +66,7 @@ public abstract class DefaultConfigManager implements ConfigManager {
                     in.close();
                 }
             } catch (IOException e) {
-                logger.error("error on loading system configs", e);
+                logger.error("error", e);
             }
         }
 

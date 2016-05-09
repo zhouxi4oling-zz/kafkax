@@ -1,11 +1,11 @@
 package io.infra.kafkax.client;
 
 import io.infra.kafkax.client.config.ConfigManager;
-import io.infra.kafkax.client.template.clients.TemplateContainer;
 import io.infra.kafkax.client.config.ConfigManagerFactory;
 import io.infra.kafkax.client.config.KafkaConfigs;
 import io.infra.kafkax.client.config.impl.DefaultConfigManagerFactory;
 import io.infra.kafkax.client.template.clients.InnerKafkaClients;
+import io.infra.kafkax.client.template.clients.TemplateContainer;
 import org.apache.kafka.common.KafkaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class Bootstrap implements ApplicationContextAware, InitializingBean, DisposableBean {
 
-    final private Logger logger = LoggerFactory.getLogger(Bootstrap.class);
+    private final Logger logger = LoggerFactory.getLogger(Bootstrap.class);
 
     private ConfigManagerFactory configManagerFactory = new DefaultConfigManagerFactory();
     private ConfigManager manager = configManagerFactory.getConfigManager("local");

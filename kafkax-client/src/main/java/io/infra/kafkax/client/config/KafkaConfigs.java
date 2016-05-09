@@ -1,6 +1,7 @@
 package io.infra.kafkax.client.config;
 
 import io.infra.kafkax.client.constants.Constants;
+import io.infra.kafkax.client.exception.KafkaRuntimeException;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.slf4j.Logger;
@@ -20,19 +21,21 @@ public class KafkaConfigs {
     // system.properties
     private String systemGroupId;
     private String systemAppId;
+    // ----- system.properties
 
     // kafka.properties
     private String kafkaServers;
     private int kafkaConsumerPollingInterval;
     private int kafkaConsumerPollingTimeout;
     private int kafkaConsumerConcurrency;
+    // ----- kafka.properties
 
     private String kafkaGroupId;
 
     private Set<KafkaProducerConfig> producerConfigs = new HashSet<KafkaProducerConfig>();
-    private Set<KafkaConsumerConfig> consumerConfigs = new HashSet<KafkaConsumerConfig>();
-
     private ReadWriteLock producerConfigLock = new ReentrantReadWriteLock();
+
+    private Set<KafkaConsumerConfig> consumerConfigs = new HashSet<KafkaConsumerConfig>();
     private ReadWriteLock consumerConfigLock = new ReentrantReadWriteLock();
 
     public KafkaConfigs(Properties config) {
@@ -43,23 +46,29 @@ public class KafkaConfigs {
         setKafkaConsumerPollingInterval(Integer.valueOf(config.getProperty(Constants.KAFKA_CONSUMER_POLLINGINTERVAL, "1000")));
         setKafkaConsumerPollingTimeout(Integer.valueOf(config.getProperty(Constants.KAFKA_CONSUMER_POLLINGTIMEOUT, "100")));
         setKafkaConsumerConcurrency(Integer.valueOf(config.getProperty(Constants.KAFKA_CONSUMER_CONCURRENCY, "5")));
+        validate();
+    }
+
+    private void validate() {
+        // TODO: 16/5/9 默认心跳超时时间30000,后续开放配置.
+        if ((getKafkaConsumerPollingTimeout() + getKafkaConsumerPollingInterval()) >= 30000) {
+            throw new KafkaRuntimeException("pollingInterval + pollingTimeout should <= 30000");
+        }
     }
 
     public KafkaConsumerConfig getKafkaConsumerConfig(String topic, String selectKey) {
-        logger.debug("get kafkaConsumerConfig by topic[{}] and selectKey[{}]", topic, selectKey);
         KafkaConsumerConfig kafkaConsumerConfig = null;
         consumerConfigLock.readLock().lock();
         try {
             for (KafkaConsumerConfig cfg : consumerConfigs) {
                 if (topic.equals(cfg.getTopic()) && selectKey.equals(cfg.getSelectKey())) {
                     kafkaConsumerConfig = cfg;
+                    break;
                 }
             }
         } finally {
             consumerConfigLock.readLock().unlock();
         }
-        logger.debug("get kafkaConsumerConfig by topic[{}] selectKey[{}] and hasResult: {}", topic, selectKey,
-                kafkaConsumerConfig != null);
         return kafkaConsumerConfig;
     }
 
@@ -69,7 +78,6 @@ public class KafkaConfigs {
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
         map.put(ProducerConfig.ACKS_CONFIG, "1");
-        logger.debug("KafkaProducerGlobalConfigs: {}", map);
         return map;
     }
 
@@ -80,7 +88,6 @@ public class KafkaConfigs {
         map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
         map.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         map.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-        logger.debug("KafkaConsumerGlobalConfigs: {}", map);
         return map;
     }
 
