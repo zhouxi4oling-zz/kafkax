@@ -151,16 +151,35 @@ public class KafkaConsumerServiceTest {
 package io.infra.kafkax.client.message;
 
 
+import java.util.UUID;
+
 /**
  * Created by zhouxiaoling on 16/3/9.
  */
 public class Message<T> {
 
+    // 消息标识
+    private String id;
+
+    // 消息所属Topic
     private String topic;
+
+    // 消息所属Partition
     private Integer partition;
+
+    // 消息所处Offset
     private long offset;
+
+    // 消息Key
     private String key;
+
+    // 消息筛选Key
     private String selectKey;
+
+    // 自定义消息头
+    private Map<String, String> headers;
+
+    // 消息体
     private T data;
 
 	// getters and setters

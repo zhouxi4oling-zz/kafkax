@@ -7,8 +7,6 @@
         <property name="configLocation" value="classpath:kafka.properties"/>
     </bean>
 
-    <bean id="kafkaProducerServiceTest" class="io.infra.kafkax.client.sample.KafkaProducerServiceTest"/>
-
     <bean id="kafkaConsumerServiceTest" class="io.infra.kafkax.client.sample.KafkaConsumerServiceTest"/>
 
 </beans>

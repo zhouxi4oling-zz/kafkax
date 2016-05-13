@@ -1,6 +1,8 @@
 package io.infra.kafkax.client.message;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -26,11 +28,15 @@ public class Message<T> {
     // 消息筛选Key
     private String selectKey;
 
+    // 自定义消息头
+    private Map<String, String> headers;
+
     // 消息体
     private T data;
 
     public Message() {
         this.id = UUID.randomUUID().toString();
+        this.headers = new HashMap<String, String>();
     }
 
     public Message(T data) {
@@ -88,6 +94,14 @@ public class Message<T> {
         return id;
     }
 
+    public String getHeader(String key) {
+        return headers.get(key);
+    }
+
+    public void addHeader(String key, String value) {
+        this.headers.put(key, value);
+    }
+
     public T getData() {
         return data;
     }
@@ -118,6 +132,7 @@ public class Message<T> {
                 ", offset=" + offset +
                 ", key='" + key + '\'' +
                 ", selectKey='" + selectKey + '\'' +
+                ", headers=" + headers +
                 ", data=" + data +
                 '}';
     }
