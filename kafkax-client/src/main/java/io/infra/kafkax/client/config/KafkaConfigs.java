@@ -28,6 +28,7 @@ public class KafkaConfigs {
     private int kafkaConsumerPollingInterval;
     private int kafkaConsumerPollingTimeout;
     private int kafkaConsumerConcurrency;
+    private KafkaProducerAcks kafkaProducerAcks;
     // ----- kafka.properties
 
     private String kafkaGroupId;
@@ -46,6 +47,7 @@ public class KafkaConfigs {
         setKafkaConsumerPollingInterval(Integer.valueOf(config.getProperty(Constants.KAFKA_CONSUMER_POLLINGINTERVAL, "1000")));
         setKafkaConsumerPollingTimeout(Integer.valueOf(config.getProperty(Constants.KAFKA_CONSUMER_POLLINGTIMEOUT, "100")));
         setKafkaConsumerConcurrency(Integer.valueOf(config.getProperty(Constants.KAFKA_CONSUMER_CONCURRENCY, "5")));
+        setKafkaProducerAcks(KafkaProducerAcks.valueOf(config.getProperty(Constants.KAFKA_PRODUCER_ACKS, "LEADER")));
         validate();
     }
 
@@ -77,7 +79,7 @@ public class KafkaConfigs {
         map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaServers());
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
-        map.put(ProducerConfig.ACKS_CONFIG, "1");
+        map.put(ProducerConfig.ACKS_CONFIG, getKafkaProducerAcks().getValue());
         return map;
     }
 
@@ -208,6 +210,14 @@ public class KafkaConfigs {
 
     public void setKafkaGroupId(String kafkaGroupId) {
         this.kafkaGroupId = kafkaGroupId;
+    }
+
+    public KafkaProducerAcks getKafkaProducerAcks() {
+        return kafkaProducerAcks;
+    }
+
+    public void setKafkaProducerAcks(KafkaProducerAcks kafkaProducerAcks) {
+        this.kafkaProducerAcks = kafkaProducerAcks;
     }
 
 }

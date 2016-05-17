@@ -14,4 +14,6 @@ public interface Constants {
 
     String KAFKA_CONSUMER_CONCURRENCY = "kafka.consumer.concurrency";
 
+    String KAFKA_PRODUCER_ACKS = "kafka.producer.acks";
+
 }
