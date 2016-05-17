@@ -77,7 +77,7 @@ public class DefaultKafkaProducerTemplate implements KafkaProducerTemplate, Clos
                         callback.onFailure(exception);
                     } else {
                         message.setOffset(metadata.offset());
-                        message.setPartition(message.getPartition());
+                        message.setPartition(metadata.partition());
                         callback.onSuccess(message);
                     }
                 }
