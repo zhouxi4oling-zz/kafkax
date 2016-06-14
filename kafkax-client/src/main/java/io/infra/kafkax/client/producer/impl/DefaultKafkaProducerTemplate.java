@@ -27,8 +27,8 @@ public class DefaultKafkaProducerTemplate implements KafkaProducerTemplate, Clos
     private KafkaProducer<String, byte[]> producer;
     private boolean closed = false;
 
-    public DefaultKafkaProducerTemplate(KafkaConfigs configs) {
-        this.producer = KafkaProducerFactory.createKafkaProducer(configs);
+    public DefaultKafkaProducerTemplate() {
+        this.producer = KafkaProducerFactory.createKafkaProducer();
     }
 
     @Override

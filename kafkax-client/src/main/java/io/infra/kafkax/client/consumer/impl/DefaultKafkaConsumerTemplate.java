@@ -1,6 +1,5 @@
 package io.infra.kafkax.client.consumer.impl;
 
-import io.infra.kafkax.client.config.KafkaConfigs;
 import io.infra.kafkax.client.consumer.KafkaConsumerTemplate;
 import io.infra.kafkax.client.template.CloseableKafkaTemplate;
 import org.slf4j.Logger;
@@ -17,9 +16,14 @@ public class DefaultKafkaConsumerTemplate implements KafkaConsumerTemplate, Clos
 
     private boolean closed = false;
 
-    public DefaultKafkaConsumerTemplate(KafkaConfigs configs) {
-        this.kafkaConsumerRunner = new KafkaConsumerRunner(configs);
+    public DefaultKafkaConsumerTemplate() {
+        this.kafkaConsumerRunner = new KafkaConsumerRunner();
         new Thread(this.kafkaConsumerRunner).start();
+    }
+
+    @Override
+    public void refreshSubscribedTopics() {
+        this.kafkaConsumerRunner.updateSubscribedTopics();
     }
 
     public synchronized void close() {

@@ -1,18 +1,19 @@
 package io.infra.kafkax.client.template.clients;
 
-import io.infra.kafkax.client.config.KafkaConfigs;
-import io.infra.kafkax.client.consumer.KafkaConsumerTemplate;
-import io.infra.kafkax.client.producer.KafkaProducerTemplate;
+import io.infra.kafkax.client.config.KafkaConsumerConfig;
+import io.infra.kafkax.client.config.KafkaProducerConfig;
+
+import java.util.Set;
 
 /**
  * Created by zhouxiaoling on 16/3/9.
  */
 public interface InnerKafkaClients {
 
-	KafkaProducerTemplate buildKafkaProducerTemplate(KafkaConfigs configs);
+    void buildKafkaProducerTemplates(Set<KafkaProducerConfig> configs);
 
-	KafkaConsumerTemplate buildKafkaConsumerTemplate(KafkaConfigs configs);
+    void buildKafkaConsumerTemplates(Set<KafkaConsumerConfig> configs);
 
-	void shutdown();
+    void shutdown();
 
 }

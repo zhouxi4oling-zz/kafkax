@@ -10,15 +10,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by zhouxiaoling on 16/3/14.
  */
-public class KafkaProducerServiceTest {
+public class LazyKafkaProducerServiceTest {
 
-    @KafkaProducer(topic = "test1")
+    @KafkaProducer(topic = "test2")
     private KafkaProducerTemplate kafkaProducerTemplate;
 
     private AtomicInteger i = new AtomicInteger(1);
 
     public void test() {
-        Message<Bean> message = new Message<Bean>("select.test1." + (i.intValue() % 2 + 1), new Bean("hello world[" + i + "]", new Date()));
+        Message<Bean> message = new Message<Bean>("select.test2." + (i.intValue() % 2 + 1), new Bean("hello world[" + i + "]", new Date()));
         kafkaProducerTemplate.sendSync(message);
         i.incrementAndGet();
     }

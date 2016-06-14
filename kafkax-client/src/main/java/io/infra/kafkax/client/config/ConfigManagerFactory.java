@@ -5,6 +5,6 @@ package io.infra.kafkax.client.config;
  */
 public interface ConfigManagerFactory {
 
-	ConfigManager getConfigManager(String key);
+    ConfigManager getConfigManager(String key);
 
 }

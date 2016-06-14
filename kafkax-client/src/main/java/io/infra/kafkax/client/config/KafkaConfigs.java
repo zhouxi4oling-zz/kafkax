@@ -4,8 +4,6 @@ import io.infra.kafkax.client.constants.Constants;
 import io.infra.kafkax.client.exception.KafkaRuntimeException;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -16,7 +14,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class KafkaConfigs {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final KafkaConfigs instance = new KafkaConfigs();
+
+    private KafkaConfigs() {
+    }
+
+    public static KafkaConfigs get() {
+        return instance;
+    }
 
     // system.properties
     private String systemGroupId;
@@ -33,13 +38,13 @@ public class KafkaConfigs {
 
     private String kafkaGroupId;
 
-    private Set<KafkaProducerConfig> producerConfigs = new HashSet<KafkaProducerConfig>();
+    private Set<KafkaProducerConfig> producerConfigs = new HashSet<>();
     private ReadWriteLock producerConfigLock = new ReentrantReadWriteLock();
 
-    private Set<KafkaConsumerConfig> consumerConfigs = new HashSet<KafkaConsumerConfig>();
+    private Set<KafkaConsumerConfig> consumerConfigs = new HashSet<>();
     private ReadWriteLock consumerConfigLock = new ReentrantReadWriteLock();
 
-    public KafkaConfigs(Properties config) {
+    public void init(Properties config) {
         setSystemAppId(config.getProperty(Constants.SYSTEM_APPID));
         setSystemGroupId(config.getProperty(Constants.SYSTEM_GROUPID));
         setKafkaGroupId(getSystemGroupId() + "." + getSystemAppId());
@@ -75,7 +80,7 @@ public class KafkaConfigs {
     }
 
     public Map<String, Object> getKafkaProducerGlobalConfigs() {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaServers());
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
@@ -84,7 +89,7 @@ public class KafkaConfigs {
     }
 
     public Map<String, Object> getKafkaConsumerGlobalConfigs() {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getKafkaServers());
         map.put(ConsumerConfig.GROUP_ID_CONFIG, getKafkaGroupId());
         map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
@@ -94,7 +99,7 @@ public class KafkaConfigs {
     }
 
     public List<String> getSubscribedTopics() {
-        List<String> topics = new ArrayList<String>();
+        List<String> topics = new ArrayList<>();
         consumerConfigLock.readLock().lock();
         try {
             for (KafkaConsumerConfig config : consumerConfigs) {
@@ -104,30 +109,6 @@ public class KafkaConfigs {
             consumerConfigLock.readLock().unlock();
         }
         return topics;
-    }
-
-    public KafkaConfigs merge(KafkaConfigs configs) {
-        addProducerConfigs(configs.producerConfigs);
-        addConsumerConfigs(configs.consumerConfigs);
-        return this;
-    }
-
-    public void addProducerConfig(KafkaProducerConfig config) {
-        producerConfigLock.writeLock().lock();
-        try {
-            producerConfigs.add(config);
-        } finally {
-            producerConfigLock.writeLock().unlock();
-        }
-    }
-
-    public void addConsumerConfig(KafkaConsumerConfig config) {
-        consumerConfigLock.writeLock().lock();
-        try {
-            consumerConfigs.add(config);
-        } finally {
-            consumerConfigLock.writeLock().unlock();
-        }
     }
 
     public void addProducerConfigs(Set<KafkaProducerConfig> configs) {

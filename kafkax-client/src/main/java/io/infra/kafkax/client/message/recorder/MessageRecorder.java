@@ -34,7 +34,7 @@ public class MessageRecorder {
     public ProducerRecord<String, byte[]> record(Message message) {
         try {
             byte[] bytes = mapper.writeValueAsBytes(message);
-            return new ProducerRecord<String, byte[]>(message.getTopic(), message.getPartition(), message.getKey(), bytes);
+            return new ProducerRecord<>(message.getTopic(), message.getPartition(), message.getKey(), bytes);
         } catch (Exception e) {
             logger.error("error on JSON write", e);
             throw new KafkaRuntimeException(e);

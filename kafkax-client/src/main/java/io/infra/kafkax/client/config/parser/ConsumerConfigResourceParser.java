@@ -2,7 +2,6 @@ package io.infra.kafkax.client.config.parser;
 
 import io.infra.kafkax.client.config.KafkaConsumerConfig;
 
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -11,7 +10,5 @@ import java.util.Set;
 public interface ConsumerConfigResourceParser extends ConfigResourceParser {
 
     Set<KafkaConsumerConfig> parse(Object bean, String beanName);
-
-    Set<KafkaConsumerConfig> parse(Map<String, String> configs);
 
 }

@@ -1,19 +1,15 @@
 package io.infra.kafkax.client.config.parser.impl;
 
-import io.infra.kafkax.client.config.KafkaConfigs;
 import io.infra.kafkax.client.config.KafkaConsumerConfig;
 import io.infra.kafkax.client.config.annotation.KafkaConsumer;
 import io.infra.kafkax.client.config.parser.ConsumerConfigResourceParser;
 import io.infra.kafkax.client.exception.KafkaRuntimeException;
 import io.infra.kafkax.client.message.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -21,21 +17,12 @@ import java.util.Set;
  */
 public class DefaultConsumerConfigResourceParser implements ConsumerConfigResourceParser {
 
-    private final Logger logger = LoggerFactory.getLogger(DefaultConsumerConfigResourceParser.class);
-
-    private KafkaConfigs configs;
-
-    public DefaultConsumerConfigResourceParser(KafkaConfigs configs) {
-        this.configs = configs;
-    }
-
     public Set<KafkaConsumerConfig> parse(Object bean, String beanName) {
-
-        Set<KafkaConsumerConfig> kafkaConsumerConfigs = new HashSet<KafkaConsumerConfig>();
+        Set<KafkaConsumerConfig> kafkaConsumerConfigs = new HashSet<>();
         Class<?> targetClazz = bean.getClass();
         Method[] methods = targetClazz.getDeclaredMethods();
 
-        Set<String> topicSelectKeySet = new HashSet<String>();
+        Set<String> topicSelectKeySet = new HashSet<>();
 
         for (int i = 0; i < methods.length; i++) {
             Method method = methods[i];
@@ -76,11 +63,6 @@ public class DefaultConsumerConfigResourceParser implements ConsumerConfigResour
         }
 
         return kafkaConsumerConfigs;
-
-    }
-
-    public Set<KafkaConsumerConfig> parse(Map<String, String> configs) {
-        return null;
     }
 
 }

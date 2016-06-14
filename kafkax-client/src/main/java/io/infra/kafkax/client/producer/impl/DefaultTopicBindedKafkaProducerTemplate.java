@@ -10,8 +10,8 @@ public class DefaultTopicBindedKafkaProducerTemplate extends DefaultKafkaProduce
 
     private String topic;
 
-    public DefaultTopicBindedKafkaProducerTemplate(String topic, KafkaConfigs configs) {
-        super(configs);
+    public DefaultTopicBindedKafkaProducerTemplate(String topic) {
+        super();
         this.topic = topic;
     }
 

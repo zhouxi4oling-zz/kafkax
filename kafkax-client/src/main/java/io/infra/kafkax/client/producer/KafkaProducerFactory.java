@@ -8,13 +8,13 @@ import org.apache.kafka.clients.producer.KafkaProducer;
  */
 public class KafkaProducerFactory {
 
-	private static KafkaProducer<String, byte[]> producer;
+    private static KafkaProducer<String, byte[]> producer;
 
-	public synchronized static KafkaProducer<String, byte[]> createKafkaProducer(KafkaConfigs configs) {
-		if (producer == null) {
-			producer = new KafkaProducer<String, byte[]>(configs.getKafkaProducerGlobalConfigs());
-		}
-		return producer;
-	}
+    public synchronized static KafkaProducer<String, byte[]> createKafkaProducer() {
+        if (producer == null) {
+            producer = new KafkaProducer<>(KafkaConfigs.get().getKafkaProducerGlobalConfigs());
+        }
+        return producer;
+    }
 
 }

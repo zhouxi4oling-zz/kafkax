@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class DefaultConfigManagerFactory implements ConfigManagerFactory {
 
-    private Map<String, ConfigManager> map = new HashMap<String, ConfigManager>();
+    private Map<String, ConfigManager> map = new HashMap<>();
 
     {
         map.put("local", new LocalConfigManager());

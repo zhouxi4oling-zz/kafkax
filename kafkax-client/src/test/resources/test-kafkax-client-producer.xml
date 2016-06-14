@@ -9,4 +9,7 @@
 
     <bean id="kafkaProducerServiceTest" class="io.infra.kafkax.client.sample.KafkaProducerServiceTest"/>
 
+    <bean id="lazyKafkaProducerServiceTest" class="io.infra.kafkax.client.sample.LazyKafkaProducerServiceTest"
+          lazy-init="true"/>
+
 </beans>

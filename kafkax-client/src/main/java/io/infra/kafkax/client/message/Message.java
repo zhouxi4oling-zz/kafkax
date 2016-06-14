@@ -36,7 +36,7 @@ public class Message<T> {
 
     public Message() {
         this.id = UUID.randomUUID().toString();
-        this.headers = new HashMap<String, String>();
+        this.headers = new HashMap<>();
     }
 
     public Message(T data) {

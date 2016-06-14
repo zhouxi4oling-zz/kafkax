@@ -13,9 +13,7 @@ import java.lang.annotation.Target;
 public @interface KafkaConsumer {
 
     String topic();
-    
+
     String selectKey();
-    
-    //TODO timeout
 
 }

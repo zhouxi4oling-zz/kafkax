@@ -27,10 +27,8 @@ public class KafkaMessageProcessor {
 
     private ExecutorService executorService;
     private Map<TopicPartition, OffsetAndMetadata> map;
-    private KafkaConfigs configs;
 
-    public KafkaMessageProcessor(KafkaConfigs configs, Map<TopicPartition, OffsetAndMetadata> map) {
-        this.configs = configs;
+    public KafkaMessageProcessor(Map<TopicPartition, OffsetAndMetadata> map) {
         this.map = map;
         executorService = Executors.newSingleThreadExecutor();
         logger.debug("new message processor initialized");
@@ -66,7 +64,7 @@ public class KafkaMessageProcessor {
             // TODO: 不严谨但错误概率不大
             map.put(new TopicPartition(message.getTopic(), message.getPartition()), new OffsetAndMetadata(message.getOffset() + 1));
 
-            KafkaConsumerConfig kafkaConsumerConfig = configs.getKafkaConsumerConfig(message.getTopic(), message.getSelectKey());
+            KafkaConsumerConfig kafkaConsumerConfig = KafkaConfigs.get().getKafkaConsumerConfig(message.getTopic(), message.getSelectKey());
 
             if (kafkaConsumerConfig == null) {
                 logger.warn("No processor found, message discarded.");

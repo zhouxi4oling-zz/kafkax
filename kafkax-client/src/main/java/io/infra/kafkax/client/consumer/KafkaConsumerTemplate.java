@@ -7,4 +7,6 @@ import io.infra.kafkax.client.template.KafkaTemplate;
  */
 public interface KafkaConsumerTemplate extends KafkaTemplate {
 
+    void refreshSubscribedTopics();
+
 }

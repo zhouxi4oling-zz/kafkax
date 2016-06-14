@@ -1,20 +1,18 @@
 package io.infra.kafkax.client.config;
 
-import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by zhouxiaoling on 16/3/10.
  */
 public interface ConfigManager {
 
-	KafkaConfigs config(Object bean, String beanName);
+    void init();
 
-	KafkaConfigs config(Map<String, String> configs);
+    void setConfigLocation(String location);
 
-	boolean init();
+    Set<KafkaProducerConfig> configKafkaProducers(Object bean, String beanName);
 
-	KafkaConfigs configs();
-
-	void setConfigLocation(String location);
+    Set<KafkaConsumerConfig> configKafkaConsumers(Object bean, String beanName);
 
 }

@@ -9,4 +9,7 @@
 
     <bean id="kafkaConsumerServiceTest" class="io.infra.kafkax.client.sample.KafkaConsumerServiceTest"/>
 
+    <bean id="lazyKafkaConsumerServiceTest" class="io.infra.kafkax.client.sample.LazyKafkaConsumerServiceTest"
+          lazy-init="true"/>
+
 </beans>
