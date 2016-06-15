@@ -1,4 +1,4 @@
-package io.infra.kafkax.client.sample;
+package io.infra.kafkax.client.sample.x;
 
 import java.util.Date;
 

@@ -98,8 +98,8 @@ public class KafkaConfigs {
         return map;
     }
 
-    public List<String> getSubscribedTopics() {
-        List<String> topics = new ArrayList<>();
+    public Set<String> getSubscribedTopics() {
+        Set<String> topics = new HashSet<>();
         consumerConfigLock.readLock().lock();
         try {
             for (KafkaConsumerConfig config : consumerConfigs) {

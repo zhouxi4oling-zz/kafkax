@@ -7,6 +7,7 @@ import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,7 +42,8 @@ public class KafkaConsumerRunner implements Runnable {
     }
 
     private void subscribe() {
-        this.consumer.subscribe(KafkaConfigs.get().getSubscribedTopics(), new ConsumerRebalanceListener() {
+        logger.info("subscribed topics: " + KafkaConfigs.get().getSubscribedTopics());
+        this.consumer.subscribe(new ArrayList(KafkaConfigs.get().getSubscribedTopics()), new ConsumerRebalanceListener() {
             @Override
             public void onPartitionsRevoked(Collection<TopicPartition> partitions) {
                 try {
@@ -63,12 +65,17 @@ public class KafkaConsumerRunner implements Runnable {
                 lock.readLock().lock();
                 try {
                     logger.debug("start polling messages");
+
                     ConsumerRecords<String, byte[]> records = consumer.poll(KafkaConfigs.get().getKafkaConsumerPollingTimeout());
+                    logger.info("records: " + records.count());
+
                     for (ConsumerRecord<String, byte[]> record : records) {
                         int x = (new TopicPartition(record.topic(), record.partition()).hashCode()) % (kafkaMessageProcessors.length);
                         kafkaMessageProcessors[x].process(record);
                     }
+
                     Thread.sleep(KafkaConfigs.get().getKafkaConsumerPollingInterval());
+
                     consumer.commitAsync(map, new OffsetCommitCallback() {
                         @Override
                         public void onComplete(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {

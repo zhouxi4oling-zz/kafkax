@@ -1,6 +1,7 @@
-package io.infra.kafkax.client.sample;
+package io.infra.kafkax.client.sample.x;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -11,10 +12,13 @@ public class KafkaConsumerApp {
     public static void main(String[] args) throws Exception {
         ApplicationContext context = new ClassPathXmlApplicationContext("test-kafkax-client-consumer.xml");
 
-        Thread.sleep(10000);
+        Thread.sleep(1000);
+
         context.getBean("lazyKafkaConsumerServiceTest");
 
-        System.in.read();
+        Thread.sleep(5000);
+
+        ((ConfigurableApplicationContext) context).close();
     }
 
 }

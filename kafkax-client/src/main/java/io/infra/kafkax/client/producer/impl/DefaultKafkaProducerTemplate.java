@@ -1,6 +1,5 @@
 package io.infra.kafkax.client.producer.impl;
 
-import io.infra.kafkax.client.config.KafkaConfigs;
 import io.infra.kafkax.client.exception.KafkaRuntimeException;
 import io.infra.kafkax.client.message.Message;
 import io.infra.kafkax.client.message.recorder.MessageRecorder;
@@ -59,7 +58,7 @@ public class DefaultKafkaProducerTemplate implements KafkaProducerTemplate, Clos
             Future<RecordMetadata> future = producer.send(MessageRecorder.getInstance().record(message));
             RecordMetadata metadata = future.get();
             message.setOffset(metadata.offset());
-            message.setPartition(message.getPartition());
+            message.setPartition(metadata.partition());
         } catch (Exception e) {
             throw new KafkaRuntimeException(e);
         }

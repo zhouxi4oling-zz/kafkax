@@ -7,9 +7,9 @@
         <property name="configLocation" value="classpath:kafka.properties"/>
     </bean>
 
-    <bean id="kafkaConsumerServiceTest" class="io.infra.kafkax.client.sample.KafkaConsumerServiceTest"/>
+    <bean id="kafkaConsumerServiceTest" class="io.infra.kafkax.client.sample.x.consumer.KafkaConsumerServiceTest"/>
 
-    <bean id="lazyKafkaConsumerServiceTest" class="io.infra.kafkax.client.sample.LazyKafkaConsumerServiceTest"
+    <bean id="lazyKafkaConsumerServiceTest" class="io.infra.kafkax.client.sample.x.consumer.LazyKafkaConsumerServiceTest"
           lazy-init="true"/>
 
 </beans>
