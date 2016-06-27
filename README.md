@@ -1,6 +1,25 @@
 # kafkax-client
 
-## 1 介绍
+- [1 介绍](#1 介绍)
+- [2 使用指南](#2 使用指南)
+  - [2.1 依赖说明](#2.1 依赖说明)
+  - [2.2 配置说明](#2.2 配置说明)
+    - [2.2.1 系统配置](#2.2.1 系统配置)
+    - [2.2.2 客户端配置](#2.2.2 客户端配置)
+    - [2.2.3 Spring配置](#2.2.3 Spring配置)
+  - [2.3 消息生产者](#2.3 消息生产者)
+    - [2.3.1 基于注解](#2.3.1 基于注解)
+  - [2.4 消息消费者](#2.4 消息消费者)
+    - [2.4.1 基于注解](#2.4.1 基于注解)
+  - [2.5 消息](#2.5 消息)
+- [3 使用规约](#3 使用规约)
+  - [3.1 system.groupId和system.appId](#3.1 system.groupId和system.appId)
+  - [3.2 topic和selectKey](#3.2 topic和selectKey)
+  - [3.3 topic/selectKey等配置数据维护](#3.3 topic/selectKey等配置数据维护)
+- [4 FAQ](#4 FAQ)
+  - [4.1 如何实现消息的“Exactly Once”消费](#4.1 如何实现消息的“Exactly Once”消费)
+
+## <a name="1 介绍">1 介绍</a>
 
 kafkax-client是基于Kafka 0.9.0.1版本进行封装的客户端，目的是为了更加易于使用，同时扩展了原生客户端的功能，并加入一些必要的监控。
 
@@ -8,21 +27,33 @@ kafkax-client是基于Kafka 0.9.0.1版本进行封装的客户端，目的是为
 
 - 由于Kafka 0.9.0.1原生客户端采用的是JDK7版本开发，所以在使用时务必采用JDK7开发系统。
 
-## 2 使用指南
+## <a name="2 使用指南">2 使用指南</a>
 
-### 2.1 依赖说明
+### <a name="2.1 依赖说明">2.1 依赖说明</a>
 
-|Group Id|Artifact Id|Version|备注|
-|---|---|---|---|
-|org.slf4j|slf4j-api|1.7.21|日志Facade框架|
-|org.springframework|spring-context|3.2.16.RELEASE|需结合Spring容器使用|
-|org.apache.kafka|kafka-clients|0.9.0.1|原生客户端|
-|com.fasterxml.jackson.core|jackson-core|2.7.4|Jackson核心处理|
-|com.fasterxml.jackson.core|jackson-databind|2.7.4|Jackson对象转换|
+from IDEA
 
-### 2.2 配置说明
+``` xml
+<orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.21" level="project" />
+<orderEntry type="library" name="Maven: org.springframework:spring-context:3.2.16.RELEASE" level="project" />
+<orderEntry type="library" name="Maven: org.springframework:spring-aop:3.2.16.RELEASE" level="project" />
+<orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
+<orderEntry type="library" name="Maven: org.springframework:spring-beans:3.2.16.RELEASE" level="project" />
+<orderEntry type="library" name="Maven: org.springframework:spring-core:3.2.16.RELEASE" level="project" />
+<orderEntry type="library" name="Maven: commons-logging:commons-logging:1.1.3" level="project" />
+<orderEntry type="library" name="Maven: org.springframework:spring-expression:3.2.16.RELEASE" level="project" />
+<orderEntry type="library" name="Maven: org.apache.kafka:kafka-clients:0.9.0.1" level="project" />
+<orderEntry type="library" name="Maven: org.xerial.snappy:snappy-java:1.1.1.7" level="project" />
+<orderEntry type="library" name="Maven: net.jpountz.lz4:lz4:1.2.0" level="project" />
+<orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.7.4" level="project" />
+<orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.7.4" level="project" />
+<orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.7.0" level="project" />
+<orderEntry type="library" scope="TEST" name="Maven: org.slf4j:slf4j-simple:1.7.21" level="project" />
+```
 
-#### 2.2.1 系统配置
+### <a name="2.2 配置说明">2.2 配置说明</a>
+
+#### <a name="2.2.1 系统配置">2.2.1 系统配置</a>
 
 在部署工程类路径中创建`system.properties`文件，以Maven结构的项目为例，路径为`/src/main/resources/system.properties`。
 
@@ -36,7 +67,7 @@ system.appId=kafka-client
 
 `groupId` + `appId`唯一的标识了本工程，该文件的创建粒度为一个部署工程一份，该标志将被基础服务组件用于区分各个不同的使用方，从而做到使用隔离。
 
-#### 2.1.2 客户端配置
+#### <a name="2.2.2 客户端配置">2.2.2 客户端配置</a>
 
 在部署工程类路径中创建`kafka.properties`文件，以Maven结构的项目为例，默认路径为`/src/main/resources/kafka.properties`，也可在Spring配置文件中通过BootStrap类进行自定义路径设置。
 
@@ -64,7 +95,7 @@ kafka.consumer.concurrency=5
 
 注意，`pollingInterval + pollingTimeout`应小于等于30000，即30秒，这是默认的客户端与服务器之间的心跳超时时间。
 
-#### 2.1.3 Spring配置
+#### <a name="2.2.3 Spring配置">2.2.3 Spring配置</a>
 
 客户端跟随Spring容器启动，所以需要在Spring配置中增加消息客户端的启动引导配置。
 
@@ -81,9 +112,9 @@ kafka.consumer.concurrency=5
 
 其中`configLocation`为可选配置，用来覆盖默认的`kafka.properties`配置文件路径，如使用默认位置，可省略该属性的配置。
 
-### 2.2 消息生产者
+### <a name="2.3 消息生产者">2.3 消息生产者</a>
 
-#### 2.2.1 基于注解
+#### <a name="2.3.1 基于注解">2.3.1 基于注解</a>
 
 ``` java
 package io.infra.kafkax.client.sample;
@@ -120,11 +151,9 @@ public class KafkaProducerServiceTest {
 
 `sendAsync`：异步调用，结合上面两种方式，消息被存储于本地队列，同时调用方需要提供一个Callback（实现io.infra.kafkax.client.producer.callback.ProducerCallback接口），待消息发送完成时回调。
 
-#### 2.2.2 基于API（待）
+### <a name="2.4 消息消费者">2.4 消息消费者</a>
 
-### 2.3 消息消费者
-
-#### 2.3.1 基于注解
+#### <a name="2.4.1 基于注解">2.4.1 基于注解</a>
 
 ``` java
 package io.infra.kafkax.client.sample;
@@ -149,9 +178,7 @@ public class KafkaConsumerServiceTest {
 
 注意，目前同样的**topic + selectKey**的组合不支持在一个应用中被注册多次！
 
-#### 2.3.2 基于API（待）
-
-### 2.4 消息
+### <a name="2.5 消息">2.5 消息</a>
 
 ``` java
 package io.infra.kafkax.client.message;
@@ -205,15 +232,15 @@ public class Message<T> {
 
 `data`：消息内容，泛型类型。
 
-## 3 使用规约
+## <a name="3 使用规约">3 使用规约</a>
 
-### 3.1 `system.groupId`和`system.appId`
+### <a name="3.1 system.groupId和system.appId">3.1 system.groupId和system.appId</a>
 
 每个团队的leader给自己的团队定义一个groupId（公司唯一）作为本团队下所有应用和组件的顶层namespace，在这个groupId之下是appId，appId的粒度为一个部署工程，可以利用这个工程的工程名作为appId，但是此时需要注意groupId下的所有appId不应该有重复。
 
 `groupId` + `appId`在Kafka中扮演者消费者群组的角色，相对于传统的JMS类消息服务的Queue和Topic结构，Kafka只提供了Topic结构。但是，可以配合利用群组的形式来实现JMS的Queue和Topic语义。同一群组的所有消费者（应用集群）订阅一个主题，则一条消息只能被其中一个消费者消费（Queue）。不同群组的所有消费者（多个应用集群）订阅一个主题，则一条消息会被各个组中的一个消费者消费（Topic）。
 
-### 3.2 `topic`和`selectKey`
+### <a name="3.2 topic和selectKey">3.2 topic和selectKey</a>
 
 topic由消息的生产方申请。由于Kafka的topic从使用形式上推荐复用，所以topic名字应能描述一批共性的业务（粗粒度）。selectKey是topic的下一级筛选，topic + selectKey唯一的决定了这条消息的处理器。selectKey的命名应是一个具体的操作业务名，应在一个topic中不重复。topic和selectKey的组合关系由消息生产方维护并告知消息消费方开发组。
 
@@ -231,14 +258,14 @@ topic由消息的生产方申请。由于Kafka的topic从使用形式上推荐�
 
 五个SelectKey：`sub-module1.operation1`、`sub-module1.operation2`、`sub-module2.operation1`、`sub-module2.operation2`、`sub-module3.operation1`。
 
-### 3.3 topic/selectKey等配置数据维护
+### <a name="3.3 topic/selectKey等配置数据维护">3.3 topic/selectKey等配置数据维护</a>
 
 由于目前相关的Console还没提供（正在计划中），所以大家需要自己先维护一份完整的配置参数文档，后续导入。
 
-## 4 FAQ
+## <a name="4 FAQ">4 FAQ</a>
 
-### 4.1 如何实现消息的“Exactly Once”消费
+### <a name="4.1 如何实现消息的“Exactly Once”消费">4.1 如何实现消息的“Exactly Once”消费</a>
 
 由于Kafka本身实现的机制，容易造成消息的重复消费，这也是Kafka官方文档中声明的Kafka默认保证消息的“At Least Once”消费语义。但是在实际使用中，重复的消息消费并不是使用方需求的，大多数情况下，我们更需要“Exactly Once”的消费语义。
 
-针对这个问题，目前版本的客户端做了一个workaround，消息本身自带一个ID，这个ID保证在全局范围内都是唯一的，因此只要使用方在使用时针对这个ID连带进行业务操作，就能保证不会消费到重复消息。（后期针对这块逻辑，会有改造计划。）
+针对这个问题，目前版本的客户端做了一个workaround，消息本身自带一个ID，这个ID保证在全局范围内都是唯一的，因此只要使用方在使用时针对这个ID连带进行业务操作，就能保证不会消费到重复消息（后期针对这块逻辑，会有改造计划）。此外，客户端本身业务做到`幂等性`，也是解决重复消费的一个重要手段。
