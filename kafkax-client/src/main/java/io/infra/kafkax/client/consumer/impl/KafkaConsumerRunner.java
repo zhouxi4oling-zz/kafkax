@@ -47,6 +47,7 @@ public class KafkaConsumerRunner implements Runnable {
             @Override
             public void onPartitionsRevoked(Collection<TopicPartition> partitions) {
                 try {
+                    logger.info("partitions revoked: " + partitions);
                     consumer.commitSync(map);
                 } catch (Exception e) {
                     logger.error("Commit failed for offsets {}", map, e);
@@ -55,6 +56,7 @@ public class KafkaConsumerRunner implements Runnable {
 
             @Override
             public void onPartitionsAssigned(Collection<TopicPartition> partitions) {
+                logger.info("partitions assigned: " + partitions);
             }
         });
     }
@@ -64,10 +66,8 @@ public class KafkaConsumerRunner implements Runnable {
             while (!closed.get()) {
                 lock.readLock().lock();
                 try {
-                    logger.debug("start polling messages");
-
                     ConsumerRecords<String, byte[]> records = consumer.poll(KafkaConfigs.get().getKafkaConsumerPollingTimeout());
-                    logger.info("records: " + records.count());
+                    logger.info("polling records: " + records.count());
 
                     for (ConsumerRecord<String, byte[]> record : records) {
                         int x = (new TopicPartition(record.topic(), record.partition()).hashCode()) % (kafkaMessageProcessors.length);
@@ -107,6 +107,7 @@ public class KafkaConsumerRunner implements Runnable {
     public void updateSubscribedTopics() {
         lock.writeLock().lock();
         try {
+            logger.info("updateSubscribedTopics!");
             subscribe();
         } finally {
             lock.writeLock().unlock();

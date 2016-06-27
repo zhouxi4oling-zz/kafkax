@@ -25,7 +25,7 @@ public class Bootstrap implements InitializingBean, BeanPostProcessor, Disposabl
     private InnerKafkaClients clients = TemplateContainer.get();
 
     public void setConfigLocation(String configLocation) {
-        logger.debug("kafka properties file [{}]", configLocation);
+        logger.info("kafka properties file [{}]", configLocation);
         manager.setConfigLocation(configLocation);
     }
 
