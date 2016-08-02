@@ -6,6 +6,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -22,6 +23,9 @@ public class KafkaConfigs {
     public static KafkaConfigs get() {
         return instance;
     }
+
+    private static final AtomicInteger PRODUCER_CLIENT_ID_SEQUENCE = new AtomicInteger(1);
+    private static final AtomicInteger CONSUMER_CLIENT_ID_SEQUENCE = new AtomicInteger(1);
 
     // system.properties
     private String systemGroupId;
@@ -85,6 +89,7 @@ public class KafkaConfigs {
         map.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         map.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
         map.put(ProducerConfig.ACKS_CONFIG, getKafkaProducerAcks().getValue());
+        map.put(ProducerConfig.CLIENT_ID_CONFIG, getKafkaGroupId() + ".producer-" + PRODUCER_CLIENT_ID_SEQUENCE.getAndIncrement());
         return map;
     }
 
@@ -95,6 +100,7 @@ public class KafkaConfigs {
         map.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
         map.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArrayDeserializer");
         map.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        map.put(ConsumerConfig.CLIENT_ID_CONFIG, getKafkaGroupId() + ".consumer-" + CONSUMER_CLIENT_ID_SEQUENCE.getAndIncrement());
         return map;
     }
 
