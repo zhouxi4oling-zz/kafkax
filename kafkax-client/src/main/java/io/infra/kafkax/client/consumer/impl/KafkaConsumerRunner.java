@@ -70,7 +70,7 @@ public class KafkaConsumerRunner implements Runnable {
                     logger.info("polling records: " + records.count());
 
                     for (ConsumerRecord<String, byte[]> record : records) {
-                        int x = (new TopicPartition(record.topic(), record.partition()).hashCode()) % (kafkaMessageProcessors.length);
+                        int x = Math.abs(new TopicPartition(record.topic(), record.partition()).hashCode()) % (kafkaMessageProcessors.length);
                         kafkaMessageProcessors[x].process(record);
                     }
 
