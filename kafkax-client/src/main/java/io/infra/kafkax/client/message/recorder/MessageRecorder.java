@@ -1,7 +1,10 @@
 package io.infra.kafkax.client.message.recorder;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import io.infra.kafkax.client.exception.KafkaRuntimeException;
 import io.infra.kafkax.client.message.Message;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -30,6 +33,12 @@ public class MessageRecorder {
     }
 
     private ObjectMapper mapper = new ObjectMapper();
+
+    {
+        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        mapper.configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, true);
+    }
 
     public ProducerRecord<String, byte[]> record(Message message) {
         try {
